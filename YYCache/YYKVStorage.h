@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface YYKVStorageItem : NSObject
 @property (nonatomic, strong) NSString *key;                ///< key
-@property (nonatomic, strong) NSData *value;                ///< value
+@property (nonatomic, strong) NSData *value;                ///< value (nil if inFile)
 @property (nullable, nonatomic, strong) NSString *filename; ///< filename (nil if inline)
 @property (nonatomic) int size;                             ///< value's size in bytes
 @property (nonatomic) int modTime;                          ///< modification unix timestamp
@@ -160,6 +160,11 @@ typedef NS_ENUM(NSUInteger, YYKVStorageType) {
                filename:(nullable NSString *)filename
            extendedData:(nullable NSData *)extendedData;
 
+- (BOOL)saveItemWithKey:(NSString *)key
+               filePath:(NSString *)filePath
+               filename:(NSString *)filename
+           extendedData:(NSData *)extendedData;
+
 #pragma mark - Remove Items
 ///=============================================================================
 /// @name Remove Items
@@ -245,6 +250,7 @@ typedef NS_ENUM(NSUInteger, YYKVStorageType) {
 
 /**
  Get item with a specified key.
+ 和下面的差别在于会修改时间戳和并清理文件，下面的只是读数据库
  
  @param key A specified key.
  @return Item for the key, or nil if not exists / error occurs.
@@ -270,6 +276,7 @@ typedef NS_ENUM(NSUInteger, YYKVStorageType) {
 
 /**
  Get items with an array of keys.
+ 和下面的差别在于会修改时间戳和并清理文件，下面的只是读数据库
  
  @param keys  An array of specified keys.
  @return An array of `YYKVStorageItem`, or nil if not exists / error occurs.
@@ -294,6 +301,7 @@ typedef NS_ENUM(NSUInteger, YYKVStorageType) {
  */
 - (nullable NSDictionary<NSString *, NSData *> *)getItemValueForKeys:(NSArray<NSString *> *)keys;
 
+- (NSString*) filePathWithName:(NSString *)filename;
 #pragma mark - Get Storage Status
 ///=============================================================================
 /// @name Get Storage Status

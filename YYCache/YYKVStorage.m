@@ -228,7 +228,18 @@ static UIApplication *_YYSharedApplication() {
     int timestamp = (int)time(NULL);
     sqlite3_bind_text(stmt, 1, key.UTF8String, -1, NULL);
     sqlite3_bind_text(stmt, 2, fileName.UTF8String, -1, NULL);
-    sqlite3_bind_int(stmt, 3, (int)value.length);
+    
+    int size = (int)value.length;
+    if (size == 0 && fileName.length != 0) {
+        NSString *path = [self filePathWithName:fileName];
+        NSURL* fileURL = [NSURL fileURLWithPath:path];
+        NSArray *resourceKeys = @[NSURLTotalFileAllocatedSizeKey];
+        NSDictionary *resourceValues = [fileURL resourceValuesForKeys:resourceKeys error:NULL];
+        
+        NSNumber *totalAllocatedSize = resourceValues[NSURLTotalFileAllocatedSizeKey];
+        size = [totalAllocatedSize intValue];
+    }
+    sqlite3_bind_int(stmt, 3, size);
     if (fileName.length == 0) {
         sqlite3_bind_blob(stmt, 4, value.bytes, (int)value.length, 0);
     } else {
@@ -613,19 +624,28 @@ static UIApplication *_YYSharedApplication() {
 
 #pragma mark - file
 
+- (NSString*) filePathWithName:(NSString *)filename {
+    return [self filePathWithName:filename];
+}
+
 - (BOOL)_fileWriteWithName:(NSString *)filename data:(NSData *)data {
-    NSString *path = [_dataPath stringByAppendingPathComponent:filename];
+    NSString *path = [self filePathWithName:filename];
     return [data writeToFile:path atomically:NO];
 }
 
 - (NSData *)_fileReadWithName:(NSString *)filename {
-    NSString *path = [_dataPath stringByAppendingPathComponent:filename];
+    NSString *path = [self filePathWithName:filename];
     NSData *data = [NSData dataWithContentsOfFile:path];
     return data;
 }
 
+- (BOOL)_fileExistWithName:(NSString *)filename {
+    NSString *path = [self filePathWithName:filename];
+    return [[NSFileManager defaultManager] fileExistsAtPath:path];
+}
+
 - (BOOL)_fileDeleteWithName:(NSString *)filename {
-    NSString *path = [_dataPath stringByAppendingPathComponent:filename];
+    NSString *path = [self filePathWithName:filename];
     return [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 }
 
@@ -766,6 +786,27 @@ static UIApplication *_YYSharedApplication() {
         }
         return [self _dbSaveWithKey:key value:value fileName:nil extendedData:extendedData];
     }
+}
+
+- (BOOL)saveItemWithKey:(NSString *)key
+               filePath:(NSString *)filePath
+               filename:(NSString *)filename
+           extendedData:(NSData *)extendedData{
+    if (key.length == 0 || filename.length == 0) return NO;
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        return NO;
+    }
+    
+    NSString *path = [self filePathWithName:filename];
+    if (![[NSFileManager defaultManager] moveItemAtPath:filePath toPath:path error:nil]) {
+        return NO;
+    }
+    if (![self _dbSaveWithKey:key value:nil fileName:filename extendedData:extendedData]) {
+        [self _fileDeleteWithName:filename];
+        return NO;
+    }
+    return YES;
 }
 
 - (BOOL)removeItemForKey:(NSString *)key {
@@ -962,8 +1003,7 @@ static UIApplication *_YYSharedApplication() {
     if (item) {
         [self _dbUpdateAccessTimeWithKey:key];
         if (item.filename) {
-            item.value = [self _fileReadWithName:item.filename];
-            if (!item.value) {
+            if (![self _fileExistWithName:item.filename]) {
                 [self _dbDeleteItemWithKey:key];
                 item = nil;
             }
@@ -1021,8 +1061,7 @@ static UIApplication *_YYSharedApplication() {
         for (NSInteger i = 0, max = items.count; i < max; i++) {
             YYKVStorageItem *item = items[i];
             if (item.filename) {
-                item.value = [self _fileReadWithName:item.filename];
-                if (!item.value) {
+                if (![self _fileExistWithName:item.filename]) {
                     if (item.key) [self _dbDeleteItemWithKey:item.key];
                     [items removeObjectAtIndex:i];
                     i--;
