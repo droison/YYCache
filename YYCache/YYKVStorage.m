@@ -625,7 +625,7 @@ static UIApplication *_YYSharedApplication() {
 #pragma mark - file
 
 - (NSString*) filePathWithName:(NSString *)filename {
-    return [self filePathWithName:filename];
+    return [_dataPath stringByAppendingPathComponent:filename];
 }
 
 - (BOOL)_fileWriteWithName:(NSString *)filename data:(NSData *)data {
