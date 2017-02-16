@@ -19,6 +19,8 @@
 		D9D419171BD0F07600CD8EBF /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D419161BD0F07600CD8EBF /* CoreFoundation.framework */; };
 		D9D419191BD0F07E00CD8EBF /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D419181BD0F07E00CD8EBF /* libsqlite3.tbd */; };
 		D9D4191B1BD0F08D00CD8EBF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D4191A1BD0F08D00CD8EBF /* QuartzCore.framework */; };
+		E4A6CA811E554AAA002514A4 /* YYDiskFileCache.h in Headers */ = {isa = PBXBuildFile; fileRef = E4A6CA7F1E554AAA002514A4 /* YYDiskFileCache.h */; };
+		E4A6CA821E554AAA002514A4 /* YYDiskFileCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E4A6CA801E554AAA002514A4 /* YYDiskFileCache.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		D9D419161BD0F07600CD8EBF /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		D9D419181BD0F07E00CD8EBF /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		D9D4191A1BD0F08D00CD8EBF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		E4A6CA7F1E554AAA002514A4 /* YYDiskFileCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYDiskFileCache.h; sourceTree = "<group>"; };
+		E4A6CA801E554AAA002514A4 /* YYDiskFileCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYDiskFileCache.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,8 @@
 				D9D419061BD0F04000CD8EBF /* YYDiskCache.m */,
 				D9D419071BD0F04000CD8EBF /* YYKVStorage.h */,
 				D9D419081BD0F04000CD8EBF /* YYKVStorage.m */,
+				E4A6CA7F1E554AAA002514A4 /* YYDiskFileCache.h */,
+				E4A6CA801E554AAA002514A4 /* YYDiskFileCache.m */,
 			);
 			name = YYCache;
 			path = ../YYCache;
@@ -105,6 +111,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4A6CA811E554AAA002514A4 /* YYDiskFileCache.h in Headers */,
 				D9D419111BD0F04000CD8EBF /* YYMemoryCache.h in Headers */,
 				D9D4190F1BD0F04000CD8EBF /* YYKVStorage.h in Headers */,
 				D9D4190D1BD0F04000CD8EBF /* YYDiskCache.h in Headers */,
@@ -179,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4A6CA821E554AAA002514A4 /* YYDiskFileCache.m in Sources */,
 				D9D419101BD0F04000CD8EBF /* YYKVStorage.m in Sources */,
 				D9D419121BD0F04000CD8EBF /* YYMemoryCache.m in Sources */,
 				D9D4190C1BD0F04000CD8EBF /* YYCache.m in Sources */,
